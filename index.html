@@ -1220,6 +1220,90 @@
     .side-panel.view-mode .notice.mark-only {
       display: none !important;
     }
+
+    .app-version-badge {
+      position: fixed;
+      right: 10px;
+      bottom: 8px;
+      z-index: 800;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      pointer-events: none;
+    }
+
+    /* iPhone含む全画面でView上部操作を固定 */
+    .fixed-control-group {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: #ffffff;
+      border: 1px solid rgba(229, 231, 235, 0.95);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      border-radius: 16px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .fixed-control-group .section {
+      margin: 0;
+    }
+
+    .side-panel.view-mode .code-list {
+      max-height: 56vh;
+    }
+
+    .side-panel.mark-mode .code-list {
+      max-height: 42vh;
+    }
+
+    @media (max-width: 480px) {
+      .fixed-control-group {
+        top: 0;
+        border-radius: 14px;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .side-panel.view-mode .code-list {
+        max-height: 54vh;
+      }
+
+      .app-version-badge {
+        font-size: 10px;
+        right: 8px;
+        bottom: 6px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .fixed-control-group {
+        top: 0;
+        padding: 6px;
+        gap: 6px;
+        border-radius: 12px;
+      }
+
+      .side-panel.view-mode .code-list {
+        max-height: calc(100vh - 190px);
+      }
+
+      .side-panel.mark-mode .code-list {
+        max-height: calc(100vh - 240px);
+      }
+
+      .app-version-badge {
+        display: none;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -1229,7 +1313,7 @@
         <h1>Volley Video Check</h1>
         <span>映像をチェックしながら、気になるプレーを記録・確認</span>
       </div>
-      <div class="version">Beta 1.1</div>
+      <div class="version">Beta 1.2</div>
     </header>
 
     <main class="layout">
@@ -1400,6 +1484,7 @@
     </main>
   </div>
 
+  <div id="appVersionBadge" class="app-version-badge">Beta 1.2</div>
   <div id="toast" class="toast"></div>
 
 
@@ -1666,7 +1751,7 @@
     function autoSaveDraft() {
       const draft = {
         app: 'Volley Video Check',
-        version: 'beta 1.1',
+        version: 'beta 1.2',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks,
@@ -2168,7 +2253,7 @@
 
       const project = {
         app: 'Volley Video Check',
-        version: 'beta 1.1',
+        version: 'beta 1.2',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
