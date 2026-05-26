@@ -401,43 +401,6 @@
     }
 
 
-    .count-summary {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .count-pill {
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: #f9fafb;
-      padding: 6px 8px;
-      font-size: 11px;
-      font-weight: 900;
-      text-align: center;
-      color: var(--text);
-      white-space: nowrap;
-    }
-
-    .count-pill.good {
-      background: #dcfce7;
-      color: var(--good);
-      border-color: #bbf7d0;
-    }
-
-    .count-pill.check {
-      background: #fef3c7;
-      color: var(--check);
-      border-color: #fde68a;
-    }
-
-    .count-pill.bad {
-      background: #fee2e2;
-      color: var(--bad);
-      border-color: #fecaca;
-    }
-
     .code-card.selected {
       outline: 3px solid rgba(37, 99, 235, 0.35);
       background: #eff6ff;
@@ -484,6 +447,54 @@
 
       .section-title {
         font-size: 11px;
+      }
+    }
+
+
+    @media (min-width: 900px) {
+      .fixed-control-group {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: #ffffff;
+        border: 1px solid rgba(229, 231, 235, 0.95);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fixed-control-group .section {
+        margin: 0;
+      }
+
+      .side-panel {
+        overflow-y: auto;
+      }
+
+      .side-panel.view-mode .code-list {
+        max-height: calc(100vh - 290px);
+      }
+
+      .side-panel.mark-mode .code-list {
+        max-height: calc(100vh - 380px);
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .fixed-control-group {
+        padding: 6px;
+        gap: 6px;
+      }
+
+      .side-panel.view-mode .code-list {
+        max-height: calc(100vh - 180px);
+      }
+
+      .side-panel.mark-mode .code-list {
+        max-height: calc(100vh - 240px);
       }
     }
 
@@ -1218,7 +1229,7 @@
         <h1>Volley Video Check</h1>
         <span>映像をチェックしながら、気になるプレーを記録・確認</span>
       </div>
-      <div class="version">Beta 1.0</div>
+      <div class="version">Beta 1.1</div>
     </header>
 
     <main class="layout">
@@ -1263,7 +1274,8 @@
 
       <aside id="sidePanel" class="side-panel mark-mode">
         <div class="fixed-control-group">
-        <section class="section sticky-mode-tabs">
+                <div class="fixed-control-group">
+<section class="section sticky-mode-tabs">
           <div class="mode-tabs">
             <button id="markModeButton" class="mode-tab active" type="button">Mark</button>
             <button id="viewModeButton" class="mode-tab" type="button">View</button>
@@ -1297,6 +1309,8 @@
         <section class="section mark-section mark-only sticky-control-section">
           <button id="markButton" class="primary-btn">この場面をマーキング</button>
         </section>
+        </div>
+
         </div>
 
 
@@ -1652,7 +1666,7 @@
     function autoSaveDraft() {
       const draft = {
         app: 'Volley Video Check',
-        version: 'beta 1.0',
+        version: 'beta 1.1',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks,
@@ -1825,27 +1839,7 @@
         return evalOk && playOk;
       });
 
-      const goodCount = filtered.filter(mark => mark.eval === 'Good').length;
-      const checkCount = filtered.filter(mark => mark.eval === 'Check').length;
-      const badCount = filtered.filter(mark => mark.eval === 'Bad').length;
-
-      counter.textContent = `${filtered.length}件`;
-
-      const summaryHtml = `
-        <div class="count-summary">
-          <div class="count-pill">ALL ${filtered.length}</div>
-          <div class="count-pill good">Good ${goodCount}</div>
-          <div class="count-pill check">Check ${checkCount}</div>
-          <div class="count-pill bad">Bad ${badCount}</div>
-        </div>
-      `;
-
-      if (filtered.length === 0) {
-        codeList.innerHTML = summaryHtml + '<div class="empty">該当するマーキングがありません。</div>';
-        return;
-      }
-
-      codeList.innerHTML = summaryHtml;
+      codeList.innerHTML = '';
       filtered
         .sort((a, b) => a.time - b.time)
         .forEach(mark => {
@@ -2174,7 +2168,7 @@
 
       const project = {
         app: 'Volley Video Check',
-        version: 'beta 1.0',
+        version: 'beta 1.1',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
