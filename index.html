@@ -121,6 +121,42 @@
       gap: 10px;
     }
 
+    .source-toggle {
+      width: 100%;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 900;
+      padding: 0 12px;
+    }
+
+    .source-toggle span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 62%;
+      text-align: right;
+    }
+
+    .source-content {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .source-content.open {
+      display: flex;
+    }
+
     .source-tabs {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -860,7 +896,7 @@
         <h1>Volley Video Check</h1>
         <span>動画を見ながら、気になるプレーをすぐ記録</span>
       </div>
-      <div class="version">Prototype v0.8</div>
+      <div class="version">Prototype v0.9</div>
     </header>
 
     <main class="layout">
@@ -876,22 +912,29 @@
         </div>
 
         <div class="video-sourcebar">
-          <div class="source-tabs">
-            <button id="fileTab" class="source-tab active" type="button">ファイル</button>
-            <button id="youtubeTab" class="source-tab" type="button">YouTube URL</button>
-          </div>
+          <button id="sourceToggle" class="source-toggle" type="button">
+            <strong id="sourceToggleTitle">動画ソース ▸</strong>
+            <span id="sourceSummary">未読込</span>
+          </button>
 
-          <div id="fileSource" class="source-row active">
-            <label class="file-label">
-              動画を選択
-              <input id="videoInput" type="file" accept="video/*" />
-            </label>
-            <div id="fileName" class="file-name">動画ファイルを選択してください</div>
-          </div>
+          <div id="sourceContent" class="source-content">
+            <div class="source-tabs">
+              <button id="fileTab" class="source-tab active" type="button">ファイル</button>
+              <button id="youtubeTab" class="source-tab" type="button">YouTube URL</button>
+            </div>
 
-          <div id="youtubeSource" class="source-row">
-            <input id="youtubeUrl" class="url-input" type="url" placeholder="YouTube URLを貼り付け" />
-            <button id="loadYoutubeButton" class="load-btn" type="button">読み込み</button>
+            <div id="fileSource" class="source-row active">
+              <label class="file-label">
+                動画を選択
+                <input id="videoInput" type="file" accept="video/*" />
+              </label>
+              <div id="fileName" class="file-name">動画ファイルを選択してください</div>
+            </div>
+
+            <div id="youtubeSource" class="source-row">
+              <input id="youtubeUrl" class="url-input" type="url" placeholder="YouTube URLを貼り付け" />
+              <button id="loadYoutubeButton" class="load-btn" type="button">読み込み</button>
+            </div>
           </div>
         </div>
       </section>
@@ -1094,6 +1137,10 @@
     const youtubeUrl = document.getElementById('youtubeUrl');
     const loadYoutubeButton = document.getElementById('loadYoutubeButton');
     const speedSelect = document.getElementById('speedSelect');
+    const sourceToggle = document.getElementById('sourceToggle');
+    const sourceToggleTitle = document.getElementById('sourceToggleTitle');
+    const sourceSummary = document.getElementById('sourceSummary');
+    const sourceContent = document.getElementById('sourceContent');
     const memoInput = document.getElementById('memoInput');
     const undoButton = document.getElementById('undoButton');
     const currentSourceInfo = document.getElementById('currentSourceInfo');
@@ -1115,7 +1162,8 @@
     let youtubePlayer = null;
     let youtubeReady = false;
     let editingMarkId = null;
-    const STORAGE_KEY = 'volleyVideoCheckDraftV08';
+    let sourceOpen = false;
+    const STORAGE_KEY = 'volleyVideoCheckDraftV09';
     let currentVideoMeta = {
       type: 'file',
       name: '',
@@ -1188,17 +1236,26 @@
     function updateCurrentSourceInfo() {
       if (currentVideoMeta.type === 'youtube' && currentVideoMeta.youtubeUrl) {
         currentSourceInfo.textContent = `YouTube：${currentVideoMeta.youtubeUrl}`;
+        sourceSummary.textContent = 'YouTube';
       } else if (currentVideoMeta.type === 'file' && currentVideoMeta.name) {
         currentSourceInfo.textContent = `ファイル：${currentVideoMeta.name}`;
+        sourceSummary.textContent = currentVideoMeta.name;
       } else {
         currentSourceInfo.textContent = 'まだ動画が読み込まれていません。';
+        sourceSummary.textContent = '未読込';
       }
+    }
+
+    function setSourceOpen(open) {
+      sourceOpen = open;
+      sourceContent.classList.toggle('open', sourceOpen);
+      sourceToggleTitle.textContent = sourceOpen ? '動画ソース ▼' : '動画ソース ▸';
     }
 
     function autoSaveDraft() {
       const draft = {
         app: 'Volley Video Check',
-        version: '0.8',
+        version: '0.9',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks,
@@ -1397,6 +1454,10 @@
         });
     }
 
+    sourceToggle.addEventListener('click', () => {
+      setSourceOpen(!sourceOpen);
+    });
+
     fileTab.addEventListener('click', () => switchSource('file'));
     youtubeTab.addEventListener('click', () => switchSource('youtube'));
 
@@ -1416,6 +1477,7 @@
         youtubeId: ''
       };
       updateCurrentSourceInfo();
+      setSourceOpen(false);
       autoSaveDraft();
       video.load();
     });
@@ -1443,6 +1505,7 @@
       };
 
       updateCurrentSourceInfo();
+      setSourceOpen(false);
       autoSaveDraft();
 
       if (youtubePlayer && youtubePlayer.loadVideoById) {
@@ -1622,7 +1685,7 @@
 
       const project = {
         app: 'Volley Video Check',
-        version: '0.8',
+        version: '0.9',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
@@ -1722,6 +1785,7 @@
     }, { passive: false });
 
     updateJumpLabel();
+    setSourceOpen(false);
     switchSource('file');
     restoreDraft();
     renderMarks();
