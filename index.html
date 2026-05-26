@@ -14,8 +14,8 @@
       --main: #2563eb;
       --main-dark: #1d4ed8;
       --good: #16a34a;
-      --bad: #dc2626;
       --check: #d97706;
+      --bad: #dc2626;
       --tile: #f9fafb;
       --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
       --radius: 18px;
@@ -114,10 +114,40 @@
       padding: 12px;
       border-bottom: 1px solid var(--line);
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .source-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .source-tab {
+      min-height: 42px;
+      border-radius: 12px;
+      background: var(--tile);
+      border: 1px solid var(--line);
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .source-tab.active {
+      background: #dbeafe;
+      color: var(--main-dark);
+      border-color: var(--main);
+    }
+
+    .source-row {
+      display: none;
       gap: 10px;
       align-items: center;
-      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .source-row.active {
+      display: flex;
     }
 
     .file-label {
@@ -147,6 +177,26 @@
       white-space: nowrap;
     }
 
+    .url-input {
+      flex: 1;
+      min-width: 180px;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .load-btn {
+      min-height: 44px;
+      border-radius: 12px;
+      background: var(--main);
+      color: #fff;
+      font-weight: 900;
+      padding: 0 14px;
+    }
+
     .video-wrap {
       background: #020617;
       width: 100%;
@@ -154,13 +204,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+    }
+
+    video,
+    #youtubePlayer {
+      width: 100%;
+      height: 100%;
+      background: #020617;
     }
 
     video {
-      width: 100%;
-      height: 100%;
       object-fit: contain;
-      background: #020617;
+    }
+
+    .hidden-player {
+      display: none !important;
     }
 
     .time-row {
@@ -206,10 +265,7 @@
       gap: 8px;
     }
 
-    .controls-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
+    .controls-grid,
     .speed-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -218,44 +274,16 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .filter-eval-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
     .play-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .filter-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .filter-eval-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .jump-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f9fafb;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px;
-    }
-
-    .jump-select {
-      flex: 0 0 82px;
-      min-height: 42px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--text);
-      font-weight: 900;
-      text-align: center;
-      padding: 0 10px;
-    }
-
-    .jump-label {
-      font-size: 14px;
-      color: var(--text);
-      font-weight: 800;
     }
 
     .tile {
@@ -333,6 +361,34 @@
       color: var(--bad);
     }
 
+    .jump-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .jump-select {
+      flex: 0 0 82px;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font-weight: 900;
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .jump-label {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 800;
+    }
+
     .notice {
       background: #eff6ff;
       color: #1e3a8a;
@@ -365,25 +421,6 @@
       gap: 8px 10px;
       align-items: center;
       text-align: left;
-    }
-
-    .delete-mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      background: #f9fafb;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-weight: 900;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .delete-mark:active {
-      background: #fee2e2;
-      color: var(--bad);
-      border-color: #fecaca;
     }
 
     .code-card.good {
@@ -435,6 +472,25 @@
       color: var(--bad);
     }
 
+    .delete-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-mark:active {
+      background: #fee2e2;
+      color: var(--bad);
+      border-color: #fecaca;
+    }
+
     .empty {
       color: var(--muted);
       background: #f9fafb;
@@ -477,6 +533,150 @@
       }
     }
 
+
+    /* iPhone横向き：iPad/PCのように左映像・右操作へ切り替え */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .app {
+        padding: 8px;
+        max-width: none;
+      }
+
+      .app-header {
+        margin-bottom: 6px;
+      }
+
+      .brand h1 {
+        font-size: 16px;
+      }
+
+      .brand span,
+      .version {
+        display: none;
+      }
+
+      .layout {
+        grid-template-columns: minmax(0, 70%) minmax(260px, 30%);
+        gap: 8px;
+        align-items: start;
+      }
+
+      .video-topbar {
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .source-tab,
+      .file-label,
+      .load-btn,
+      .url-input {
+        min-height: 36px;
+        border-radius: 10px;
+        font-size: 12px;
+      }
+
+      .video-wrap {
+        aspect-ratio: 16 / 9;
+        max-height: calc(100vh - 108px);
+      }
+
+      .time-row {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .current-time {
+        font-size: 15px;
+      }
+
+      .side-panel {
+        max-height: calc(100vh - 52px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 8px;
+        gap: 10px;
+        border-radius: 14px;
+      }
+
+      .section {
+        gap: 6px;
+      }
+
+      .section-title {
+        font-size: 12px;
+      }
+
+      .controls-grid,
+      .speed-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .eval-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .play-grid,
+      .filter-grid,
+      .filter-eval-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tile {
+        min-height: 38px;
+        padding: 7px 6px;
+        border-radius: 10px;
+        font-size: 12px;
+      }
+
+      .primary-btn {
+        min-height: 44px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+
+      .jump-row,
+      .notice {
+        padding: 8px;
+        border-radius: 12px;
+      }
+
+      .jump-select {
+        min-height: 36px;
+      }
+
+      .jump-label,
+      .notice {
+        font-size: 11px;
+      }
+
+      .sub-btn {
+        min-height: 36px;
+        font-size: 12px;
+      }
+
+      .code-list {
+        max-height: 40vh;
+      }
+
+      .code-card {
+        padding: 8px;
+        border-radius: 12px;
+      }
+
+      .code-time {
+        font-size: 14px;
+      }
+
+      .tag {
+        font-size: 10px;
+        padding: 3px 7px;
+      }
+
+      .delete-mark {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
     @media (max-width: 480px) {
       .app {
         padding: 8px;
@@ -502,6 +702,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .filter-eval-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .tile {
         min-height: 46px;
       }
@@ -519,25 +723,38 @@
         <h1>Volley Video Check</h1>
         <span>動画を見ながら、気になるプレーをすぐ記録</span>
       </div>
-      <div class="version">Prototype v0.3</div>
+      <div class="version">Prototype v0.6</div>
     </header>
 
     <main class="layout">
       <section class="video-panel">
         <div class="video-topbar">
-          <label class="file-label">
-            動画を読み込む
-            <input id="videoInput" type="file" accept="video/*" />
-          </label>
-          <div id="fileName" class="file-name">動画ファイルを選択してください</div>
+          <div class="source-tabs">
+            <button id="fileTab" class="source-tab active" type="button">ファイル</button>
+            <button id="youtubeTab" class="source-tab" type="button">YouTube URL</button>
+          </div>
+
+          <div id="fileSource" class="source-row active">
+            <label class="file-label">
+              動画を選択
+              <input id="videoInput" type="file" accept="video/*" />
+            </label>
+            <div id="fileName" class="file-name">動画ファイルを選択してください</div>
+          </div>
+
+          <div id="youtubeSource" class="source-row">
+            <input id="youtubeUrl" class="url-input" type="url" placeholder="YouTube URLを貼り付け" />
+            <button id="loadYoutubeButton" class="load-btn" type="button">読み込み</button>
+          </div>
         </div>
 
         <div class="video-wrap">
           <video id="video" playsinline controls></video>
+          <div id="youtubePlayer" class="hidden-player"></div>
         </div>
 
         <div class="time-row">
-          <span>現在時刻</span>
+          <span id="sourceLabel">ファイル動画</span>
           <span id="currentTime" class="current-time">00:00</span>
         </div>
       </section>
@@ -639,7 +856,7 @@
             </label>
           </div>
           <div class="notice">
-            動画はコピー保存されません。次回は同じ動画を読み込み、保存したコードファイルを読み込むとタイムコードが復元されます。
+            ファイル動画はコピー保存されません。YouTubeの場合はURLを保存します。次回は動画ソースとコードファイルを読み込むとタイムコードが復元されます。
           </div>
         </section>
 
@@ -663,11 +880,14 @@
     </main>
   </div>
 
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     const video = document.getElementById('video');
+    const youtubePlayerEl = document.getElementById('youtubePlayer');
     const videoInput = document.getElementById('videoInput');
     const fileName = document.getElementById('fileName');
     const currentTimeEl = document.getElementById('currentTime');
+    const sourceLabel = document.getElementById('sourceLabel');
     const markButton = document.getElementById('markButton');
     const codeList = document.getElementById('codeList');
     const counter = document.getElementById('counter');
@@ -677,6 +897,12 @@
     const jumpLabel = document.getElementById('jumpLabel');
     const saveProjectButton = document.getElementById('saveProjectButton');
     const projectInput = document.getElementById('projectInput');
+    const fileTab = document.getElementById('fileTab');
+    const youtubeTab = document.getElementById('youtubeTab');
+    const fileSource = document.getElementById('fileSource');
+    const youtubeSource = document.getElementById('youtubeSource');
+    const youtubeUrl = document.getElementById('youtubeUrl');
+    const loadYoutubeButton = document.getElementById('loadYoutubeButton');
 
     let selectedEval = 'Good';
     let selectedPlay = 'アタック';
@@ -684,7 +910,27 @@
     let filterEval = 'ALL';
     let filterPlay = 'ALL';
     let marks = [];
-    let currentVideoMeta = { name: '', size: 0, duration: 0 };
+    let sourceType = 'file';
+    let youtubePlayer = null;
+    let youtubeReady = false;
+    let currentVideoMeta = {
+      type: 'file',
+      name: '',
+      size: 0,
+      duration: 0,
+      youtubeUrl: '',
+      youtubeId: ''
+    };
+
+    function onYouTubeIframeAPIReady() {
+      youtubeReady = true;
+    }
+
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+    setInterval(() => {
+      currentTimeEl.textContent = formatTime(getCurrentTime());
+    }, 250);
 
     function formatTime(seconds) {
       if (!Number.isFinite(seconds)) return '00:00';
@@ -723,6 +969,93 @@
       URL.revokeObjectURL(url);
     }
 
+    function getYoutubeId(url) {
+      try {
+        const parsed = new URL(url.trim());
+        if (parsed.hostname.includes('youtu.be')) {
+          return parsed.pathname.replace('/', '').split('?')[0];
+        }
+        if (parsed.hostname.includes('youtube.com')) {
+          if (parsed.searchParams.get('v')) return parsed.searchParams.get('v');
+          if (parsed.pathname.includes('/shorts/')) return parsed.pathname.split('/shorts/')[1].split('/')[0];
+          if (parsed.pathname.includes('/embed/')) return parsed.pathname.split('/embed/')[1].split('/')[0];
+        }
+      } catch (error) {
+        return '';
+      }
+      return '';
+    }
+
+    function switchSource(type) {
+      sourceType = type;
+      if (type === 'file') {
+        fileTab.classList.add('active');
+        youtubeTab.classList.remove('active');
+        fileSource.classList.add('active');
+        youtubeSource.classList.remove('active');
+        video.classList.remove('hidden-player');
+        youtubePlayerEl.classList.add('hidden-player');
+        sourceLabel.textContent = 'ファイル動画';
+        if (youtubePlayer && youtubePlayer.pauseVideo) youtubePlayer.pauseVideo();
+      } else {
+        youtubeTab.classList.add('active');
+        fileTab.classList.remove('active');
+        youtubeSource.classList.add('active');
+        fileSource.classList.remove('active');
+        video.classList.add('hidden-player');
+        youtubePlayerEl.classList.remove('hidden-player');
+        sourceLabel.textContent = 'YouTube';
+        video.pause();
+      }
+    }
+
+    function getCurrentTime() {
+      if (sourceType === 'youtube' && youtubePlayer && youtubePlayer.getCurrentTime) {
+        return youtubePlayer.getCurrentTime() || 0;
+      }
+      return video.currentTime || 0;
+    }
+
+    function getDuration() {
+      if (sourceType === 'youtube' && youtubePlayer && youtubePlayer.getDuration) {
+        return youtubePlayer.getDuration() || 0;
+      }
+      return video.duration || 0;
+    }
+
+    function seekTo(seconds) {
+      const next = Math.max(0, seconds);
+      if (sourceType === 'youtube' && youtubePlayer && youtubePlayer.seekTo) {
+        youtubePlayer.seekTo(next, true);
+      } else {
+        video.currentTime = Math.min(getDuration() || Infinity, next);
+      }
+    }
+
+    function playMedia() {
+      if (sourceType === 'youtube' && youtubePlayer && youtubePlayer.playVideo) {
+        youtubePlayer.playVideo();
+      } else {
+        video.play().catch(() => {});
+      }
+    }
+
+    function pauseMedia() {
+      if (sourceType === 'youtube' && youtubePlayer && youtubePlayer.pauseVideo) {
+        youtubePlayer.pauseVideo();
+      } else {
+        video.pause();
+      }
+    }
+
+    function setPlaybackRate(rate) {
+      if (sourceType === 'youtube' && youtubePlayer && youtubePlayer.setPlaybackRate) {
+        youtubePlayer.setPlaybackRate(rate);
+      } else {
+        video.playbackRate = rate;
+      }
+    }
+
     function renderMarks() {
       const filtered = marks.filter(mark => {
         const evalOk = filterEval === 'ALL' || mark.eval === filterEval;
@@ -755,9 +1088,8 @@
           `;
 
           card.addEventListener('click', () => {
-            const nextTime = Math.max(0, mark.time + jumpOffset);
-            video.currentTime = nextTime;
-            video.play().catch(() => {});
+            seekTo(mark.time + jumpOffset);
+            playMedia();
           });
 
           card.querySelector('.delete-mark').addEventListener('click', event => {
@@ -771,13 +1103,24 @@
         });
     }
 
+    fileTab.addEventListener('click', () => switchSource('file'));
+    youtubeTab.addEventListener('click', () => switchSource('youtube'));
+
     videoInput.addEventListener('change', event => {
       const file = event.target.files[0];
       if (!file) return;
+      switchSource('file');
       const url = URL.createObjectURL(file);
       video.src = url;
       fileName.textContent = file.name;
-      currentVideoMeta = { name: file.name, size: file.size, duration: 0 };
+      currentVideoMeta = {
+        type: 'file',
+        name: file.name,
+        size: file.size,
+        duration: 0,
+        youtubeUrl: '',
+        youtubeId: ''
+      };
       video.load();
     });
 
@@ -785,24 +1128,71 @@
       currentVideoMeta.duration = video.duration || 0;
     });
 
-    video.addEventListener('timeupdate', () => {
-      currentTimeEl.textContent = formatTime(video.currentTime);
+    loadYoutubeButton.addEventListener('click', () => {
+      const url = youtubeUrl.value.trim();
+      const id = getYoutubeId(url);
+      if (!id) {
+        alert('YouTube URLを確認してください。');
+        return;
+      }
+
+      switchSource('youtube');
+      currentVideoMeta = {
+        type: 'youtube',
+        name: 'YouTube',
+        size: 0,
+        duration: 0,
+        youtubeUrl: url,
+        youtubeId: id
+      };
+
+      if (youtubePlayer && youtubePlayer.loadVideoById) {
+        youtubePlayer.loadVideoById(id);
+      } else {
+        if (!youtubeReady || !window.YT || !window.YT.Player) {
+          alert('YouTubeプレイヤーの準備中です。少し待ってからもう一度押してください。');
+          return;
+        }
+        youtubePlayer = new YT.Player('youtubePlayer', {
+          host: 'https://www.youtube.com',
+          videoId: id,
+          playerVars: {
+            playsinline: 1,
+            rel: 0,
+            modestbranding: 1,
+            origin: window.location.origin
+          },
+          events: {
+            onReady: () => {
+              youtubePlayer.playVideo();
+            },
+            onError: (event) => {
+              alert('YouTube動画の読み込みに失敗しました。埋め込み許可、限定公開設定、またはSafari/PWA環境の影響を確認してください。エラー: ' + event.data);
+            },
+            onStateChange: () => {
+              if (youtubePlayer && youtubePlayer.getDuration) {
+                currentVideoMeta.duration = youtubePlayer.getDuration() || 0;
+              }
+            }
+          }
+        });
+      }
     });
 
     document.querySelectorAll('[data-action]').forEach(button => {
       button.addEventListener('click', () => {
         const action = button.dataset.action;
-        if (action === 'play') video.play().catch(() => {});
-        if (action === 'pause') video.pause();
-        if (action === 'back') video.currentTime = Math.max(0, video.currentTime - 2);
-        if (action === 'forward') video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 2);
+        if (action === 'play') playMedia();
+        if (action === 'pause') pauseMedia();
+        if (action === 'back') seekTo(getCurrentTime() - 2);
+        if (action === 'forward') seekTo(getCurrentTime() + 2);
       });
     });
 
     document.querySelectorAll('[data-speed]').forEach(button => {
       button.addEventListener('click', () => {
         const speed = Number(button.dataset.speed);
-        video.playbackRate = speed;
+        setPlaybackRate(speed);
         setActive('speedButtons', button);
       });
     });
@@ -836,8 +1226,6 @@
       updateJumpLabel();
     });
 
-    updateJumpLabel();
-
     document.querySelectorAll('[data-filter-eval]').forEach(button => {
       button.addEventListener('click', () => {
         filterEval = button.dataset.filterEval;
@@ -855,14 +1243,19 @@
     });
 
     markButton.addEventListener('click', () => {
-      if (!video.src) {
+      const time = getCurrentTime();
+      const hasSource = sourceType === 'youtube'
+        ? Boolean(currentVideoMeta.youtubeId)
+        : Boolean(video.src);
+
+      if (!hasSource) {
         alert('先に動画を読み込んでください。');
         return;
       }
 
       marks.push({
-        id: Date.now(),
-        time: video.currentTime,
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        time,
         eval: selectedEval,
         play: selectedPlay
       });
@@ -883,14 +1276,20 @@
         return;
       }
 
-      const header = ['timecode', 'seconds', 'eval', 'play'];
+      const header = ['timecode', 'seconds', 'eval', 'play', 'source_type', 'source'];
+      const source = currentVideoMeta.type === 'youtube'
+        ? currentVideoMeta.youtubeUrl
+        : currentVideoMeta.name;
+
       const rows = [...marks]
         .sort((a, b) => a.time - b.time)
         .map(mark => [
           formatTime(mark.time),
           mark.time.toFixed(2),
           mark.eval,
-          mark.play
+          mark.play,
+          currentVideoMeta.type,
+          source
         ]);
 
       const csv = [header, ...rows]
@@ -906,17 +1305,21 @@
         return;
       }
 
+      currentVideoMeta.duration = getDuration();
+
       const project = {
         app: 'Volley Video Check',
-        version: '0.3',
+        version: '0.6',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
       };
 
-      const safeName = currentVideoMeta.name
-        ? currentVideoMeta.name.replace(/\.[^/.]+$/, '').replace(/[\\/:*?"<>|]/g, '_')
-        : 'project';
+      const safeName = currentVideoMeta.type === 'youtube'
+        ? `youtube_${currentVideoMeta.youtubeId || 'project'}`
+        : (currentVideoMeta.name
+          ? currentVideoMeta.name.replace(/\.[^/.]+$/, '').replace(/[\\/:*?"<>|]/g, '_')
+          : 'project');
 
       downloadTextFile(
         `vvc_${safeName}.json`,
@@ -939,7 +1342,13 @@
           }
 
           const loadedVideo = project.video || {};
-          if (currentVideoMeta.name && loadedVideo.name && currentVideoMeta.name !== loadedVideo.name) {
+          if (loadedVideo.type === 'youtube' && loadedVideo.youtubeUrl) {
+            const ok = confirm('保存されているYouTube URLを読み込みますか？');
+            if (ok) {
+              youtubeUrl.value = loadedVideo.youtubeUrl;
+              loadYoutubeButton.click();
+            }
+          } else if (currentVideoMeta.name && loadedVideo.name && currentVideoMeta.name !== loadedVideo.name) {
             const ok = confirm(
               `保存時の動画名と現在の動画名が違います。\n\n保存時: ${loadedVideo.name}\n現在: ${currentVideoMeta.name}\n\nこのまま読み込みますか？`
             );
@@ -964,6 +1373,8 @@
       reader.readAsText(file, 'utf-8');
     });
 
+    updateJumpLabel();
+    switchSource('file');
     renderMarks();
   </script>
 </body>
