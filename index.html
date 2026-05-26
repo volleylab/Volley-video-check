@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Volley Video Check</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --main: #2563eb;
+      --main-dark: #1d4ed8;
+      --good: #16a34a;
+      --bad: #dc2626;
+      --check: #d97706;
+      --tile: #f9fafb;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
+      overscroll-behavior: none;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    button, select, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 12px;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .version {
+      font-size: 11px;
+      color: var(--muted);
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .video-panel,
+    .side-panel {
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(229, 231, 235, 0.8);
+    }
+
+    .video-panel {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-topbar {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .file-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--main);
+      color: white;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-weight: 700;
+      min-height: 44px;
+    }
+
+    .file-label input {
+      display: none;
+    }
+
+    .file-name {
+      font-size: 12px;
+      color: var(--muted);
+      flex: 1;
+      min-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .video-wrap {
+      background: #020617;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #020617;
+    }
+
+    .time-row {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .current-time {
+      color: var(--text);
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .side-panel {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #374151;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tile-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .controls-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .speed-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .eval-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .play-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filter-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .filter-eval-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .jump-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .jump-select {
+      flex: 0 0 82px;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font-weight: 900;
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .jump-label {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .tile {
+      min-height: 48px;
+      padding: 10px 8px;
+      border-radius: 13px;
+      background: var(--tile);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 800;
+      text-align: center;
+      transition: transform 0.05s ease, background 0.15s ease, border 0.15s ease;
+      user-select: none;
+    }
+
+    .tile:active {
+      transform: scale(0.98);
+    }
+
+    .tile.active {
+      background: #dbeafe;
+      border-color: var(--main);
+      color: var(--main-dark);
+    }
+
+    .tile.good.active {
+      background: #dcfce7;
+      border-color: var(--good);
+      color: var(--good);
+    }
+
+    .tile.check.active {
+      background: #fef3c7;
+      border-color: var(--check);
+      color: var(--check);
+    }
+
+    .tile.bad.active {
+      background: #fee2e2;
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    .primary-btn {
+      width: 100%;
+      min-height: 56px;
+      border-radius: 16px;
+      background: var(--main);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+    }
+
+    .primary-btn:active {
+      background: var(--main-dark);
+    }
+
+    .small-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sub-btn {
+      min-height: 42px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .sub-btn.danger {
+      color: var(--bad);
+    }
+
+    .notice {
+      background: #eff6ff;
+      color: #1e3a8a;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .code-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 42vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 2px;
+    }
+
+    .code-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--main);
+      border-radius: 14px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px 10px;
+      align-items: center;
+      text-align: left;
+    }
+
+    .delete-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-mark:active {
+      background: #fee2e2;
+      color: var(--bad);
+      border-color: #fecaca;
+    }
+
+    .code-card.good {
+      border-left-color: var(--good);
+    }
+
+    .code-card.check {
+      border-left-color: var(--check);
+    }
+
+    .code-card.bad {
+      border-left-color: var(--bad);
+    }
+
+    .code-time {
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      font-size: 16px;
+    }
+
+    .code-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .tag.good {
+      background: #dcfce7;
+      color: var(--good);
+    }
+
+    .tag.check {
+      background: #fef3c7;
+      color: var(--check);
+    }
+
+    .tag.bad {
+      background: #fee2e2;
+      color: var(--bad);
+    }
+
+    .empty {
+      color: var(--muted);
+      background: #f9fafb;
+      border: 1px dashed #d1d5db;
+      padding: 18px 12px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .counter {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (min-width: 900px) {
+      .app {
+        padding: 16px;
+      }
+
+      .layout {
+        grid-template-columns: minmax(0, 74%) minmax(300px, 26%);
+        align-items: start;
+      }
+
+      .side-panel {
+        max-height: calc(100vh - 88px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .video-wrap {
+        aspect-ratio: 16 / 9;
+      }
+
+      .code-list {
+        max-height: 36vh;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .app {
+        padding: 8px;
+      }
+
+      .brand h1 {
+        font-size: 19px;
+      }
+
+      .version {
+        display: none;
+      }
+
+      .controls-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .play-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tile {
+        min-height: 46px;
+      }
+
+      .code-list {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <h1>Volley Video Check</h1>
+        <span>動画を見ながら、気になるプレーをすぐ記録</span>
+      </div>
+      <div class="version">Prototype v0.3</div>
+    </header>
+
+    <main class="layout">
+      <section class="video-panel">
+        <div class="video-topbar">
+          <label class="file-label">
+            動画を読み込む
+            <input id="videoInput" type="file" accept="video/*" />
+          </label>
+          <div id="fileName" class="file-name">動画ファイルを選択してください</div>
+        </div>
+
+        <div class="video-wrap">
+          <video id="video" playsinline controls></video>
+        </div>
+
+        <div class="time-row">
+          <span>現在時刻</span>
+          <span id="currentTime" class="current-time">00:00</span>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <section class="section">
+          <div class="section-title">動画操作</div>
+          <div class="tile-grid controls-grid">
+            <button class="tile" data-action="play">▶ 再生</button>
+            <button class="tile" data-action="pause">⏸ 停止</button>
+            <button class="tile" data-action="back">−2秒</button>
+            <button class="tile" data-action="forward">＋2秒</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">再生速度</div>
+          <div class="tile-grid speed-grid" id="speedButtons">
+            <button class="tile" data-speed="0.5">0.5x</button>
+            <button class="tile active" data-speed="1">1.0x</button>
+            <button class="tile" data-speed="1.5">1.5x</button>
+            <button class="tile" data-speed="2">2.0x</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">評価</div>
+          <div class="tile-grid eval-grid" id="evalButtons">
+            <button class="tile good active" data-eval="Good">Good</button>
+            <button class="tile check" data-eval="Check">Check</button>
+            <button class="tile bad" data-eval="Bad">Bad</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">プレー種別</div>
+          <div class="tile-grid play-grid" id="playButtons">
+            <button class="tile active" data-play="アタック">アタック</button>
+            <button class="tile" data-play="ブロック">ブロック</button>
+            <button class="tile" data-play="サーブ">サーブ</button>
+            <button class="tile" data-play="サーブレシーブ">サーブレシーブ</button>
+            <button class="tile" data-play="ディグ">ディグ</button>
+            <button class="tile" data-play="トス">トス</button>
+            <button class="tile" data-play="その他">その他</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <button id="markButton" class="primary-btn">この場面をマーキング</button>
+        </section>
+
+        <section class="section">
+          <div class="section-title">ジャンプ開始位置</div>
+          <div class="jump-row">
+            <select id="jumpSelect" class="jump-select">
+              <option value="-5">5</option>
+              <option value="-4">4</option>
+              <option value="-3">3</option>
+              <option value="-2" selected>2</option>
+              <option value="-1">1</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            <span id="jumpLabel" class="jump-label">秒前から再生</span>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">検索フィルター</div>
+          <div class="tile-grid filter-eval-grid" id="filterEvalButtons">
+            <button class="tile active" data-filter-eval="ALL">ALL</button>
+            <button class="tile good" data-filter-eval="Good">Good</button>
+            <button class="tile check" data-filter-eval="Check">Check</button>
+            <button class="tile bad" data-filter-eval="Bad">Bad</button>
+          </div>
+          <div class="tile-grid filter-grid" id="filterPlayButtons">
+            <button class="tile active" data-filter-play="ALL">ALL</button>
+            <button class="tile" data-filter-play="アタック">アタック</button>
+            <button class="tile" data-filter-play="ブロック">ブロック</button>
+            <button class="tile" data-filter-play="サーブ">サーブ</button>
+            <button class="tile" data-filter-play="サーブレシーブ">サーブレシーブ</button>
+            <button class="tile" data-filter-play="ディグ">ディグ</button>
+            <button class="tile" data-filter-play="トス">トス</button>
+            <button class="tile" data-filter-play="その他">その他</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">保存・読込</div>
+          <div class="small-actions">
+            <button id="saveProjectButton" class="sub-btn">コード保存</button>
+            <label class="sub-btn" style="display:flex;align-items:center;justify-content:center;">
+              コード読込
+              <input id="projectInput" type="file" accept=".json,application/json" style="display:none;" />
+            </label>
+          </div>
+          <div class="notice">
+            動画はコピー保存されません。次回は同じ動画を読み込み、保存したコードファイルを読み込むとタイムコードが復元されます。
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="small-actions">
+            <button id="csvButton" class="sub-btn">CSV出力</button>
+            <button id="clearButton" class="sub-btn danger">全削除</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            コードウインドウ
+            <span id="counter" class="counter">0件</span>
+          </div>
+          <div id="codeList" class="code-list">
+            <div class="empty">まだマーキングがありません。<br>動画を再生して「この場面をマーキング」を押してください。</div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const videoInput = document.getElementById('videoInput');
+    const fileName = document.getElementById('fileName');
+    const currentTimeEl = document.getElementById('currentTime');
+    const markButton = document.getElementById('markButton');
+    const codeList = document.getElementById('codeList');
+    const counter = document.getElementById('counter');
+    const csvButton = document.getElementById('csvButton');
+    const clearButton = document.getElementById('clearButton');
+    const jumpSelect = document.getElementById('jumpSelect');
+    const jumpLabel = document.getElementById('jumpLabel');
+    const saveProjectButton = document.getElementById('saveProjectButton');
+    const projectInput = document.getElementById('projectInput');
+
+    let selectedEval = 'Good';
+    let selectedPlay = 'アタック';
+    let jumpOffset = -2;
+    let filterEval = 'ALL';
+    let filterPlay = 'ALL';
+    let marks = [];
+    let currentVideoMeta = { name: '', size: 0, duration: 0 };
+
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds)) return '00:00';
+      const total = Math.max(0, Math.floor(seconds));
+      const h = Math.floor(total / 3600);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      if (h > 0) {
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function setActive(containerId, target) {
+      const container = document.getElementById(containerId);
+      container.querySelectorAll('.tile').forEach(btn => btn.classList.remove('active'));
+      target.classList.add('active');
+    }
+
+    function evalClass(value) {
+      if (value === 'Good') return 'good';
+      if (value === 'Check') return 'check';
+      if (value === 'Bad') return 'bad';
+      return '';
+    }
+
+    function downloadTextFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderMarks() {
+      const filtered = marks.filter(mark => {
+        const evalOk = filterEval === 'ALL' || mark.eval === filterEval;
+        const playOk = filterPlay === 'ALL' || mark.play === filterPlay;
+        return evalOk && playOk;
+      });
+
+      counter.textContent = `${filtered.length}件`;
+
+      if (filtered.length === 0) {
+        codeList.innerHTML = '<div class="empty">該当するマーキングがありません。</div>';
+        return;
+      }
+
+      codeList.innerHTML = '';
+      filtered
+        .sort((a, b) => a.time - b.time)
+        .forEach(mark => {
+          const card = document.createElement('button');
+          const cls = evalClass(mark.eval);
+          card.className = `code-card ${cls}`;
+          card.type = 'button';
+          card.innerHTML = `
+            <div class="code-time">${formatTime(mark.time)}</div>
+            <div class="code-tags">
+              <span class="tag ${cls}">${mark.eval}</span>
+              <span class="tag">${mark.play}</span>
+            </div>
+            <button class="delete-mark" type="button" title="このコードを削除">×</button>
+          `;
+
+          card.addEventListener('click', () => {
+            const nextTime = Math.max(0, mark.time + jumpOffset);
+            video.currentTime = nextTime;
+            video.play().catch(() => {});
+          });
+
+          card.querySelector('.delete-mark').addEventListener('click', event => {
+            event.stopPropagation();
+            if (!confirm(`${formatTime(mark.time)} ${mark.eval} ${mark.play} を削除しますか？`)) return;
+            marks = marks.filter(item => item.id !== mark.id);
+            renderMarks();
+          });
+
+          codeList.appendChild(card);
+        });
+    }
+
+    videoInput.addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      video.src = url;
+      fileName.textContent = file.name;
+      currentVideoMeta = { name: file.name, size: file.size, duration: 0 };
+      video.load();
+    });
+
+    video.addEventListener('loadedmetadata', () => {
+      currentVideoMeta.duration = video.duration || 0;
+    });
+
+    video.addEventListener('timeupdate', () => {
+      currentTimeEl.textContent = formatTime(video.currentTime);
+    });
+
+    document.querySelectorAll('[data-action]').forEach(button => {
+      button.addEventListener('click', () => {
+        const action = button.dataset.action;
+        if (action === 'play') video.play().catch(() => {});
+        if (action === 'pause') video.pause();
+        if (action === 'back') video.currentTime = Math.max(0, video.currentTime - 2);
+        if (action === 'forward') video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 2);
+      });
+    });
+
+    document.querySelectorAll('[data-speed]').forEach(button => {
+      button.addEventListener('click', () => {
+        const speed = Number(button.dataset.speed);
+        video.playbackRate = speed;
+        setActive('speedButtons', button);
+      });
+    });
+
+    document.querySelectorAll('[data-eval]').forEach(button => {
+      button.addEventListener('click', () => {
+        selectedEval = button.dataset.eval;
+        setActive('evalButtons', button);
+      });
+    });
+
+    document.querySelectorAll('[data-play]').forEach(button => {
+      button.addEventListener('click', () => {
+        selectedPlay = button.dataset.play;
+        setActive('playButtons', button);
+      });
+    });
+
+    function updateJumpLabel() {
+      if (jumpOffset < 0) {
+        jumpLabel.textContent = '秒前から再生';
+      } else if (jumpOffset > 0) {
+        jumpLabel.textContent = '秒後から再生';
+      } else {
+        jumpLabel.textContent = '秒から再生';
+      }
+    }
+
+    jumpSelect.addEventListener('change', () => {
+      jumpOffset = Number(jumpSelect.value);
+      updateJumpLabel();
+    });
+
+    updateJumpLabel();
+
+    document.querySelectorAll('[data-filter-eval]').forEach(button => {
+      button.addEventListener('click', () => {
+        filterEval = button.dataset.filterEval;
+        setActive('filterEvalButtons', button);
+        renderMarks();
+      });
+    });
+
+    document.querySelectorAll('[data-filter-play]').forEach(button => {
+      button.addEventListener('click', () => {
+        filterPlay = button.dataset.filterPlay;
+        setActive('filterPlayButtons', button);
+        renderMarks();
+      });
+    });
+
+    markButton.addEventListener('click', () => {
+      if (!video.src) {
+        alert('先に動画を読み込んでください。');
+        return;
+      }
+
+      marks.push({
+        id: Date.now(),
+        time: video.currentTime,
+        eval: selectedEval,
+        play: selectedPlay
+      });
+
+      renderMarks();
+    });
+
+    clearButton.addEventListener('click', () => {
+      if (marks.length === 0) return;
+      if (!confirm('すべてのマーキングを削除しますか？')) return;
+      marks = [];
+      renderMarks();
+    });
+
+    csvButton.addEventListener('click', () => {
+      if (marks.length === 0) {
+        alert('出力するマーキングがありません。');
+        return;
+      }
+
+      const header = ['timecode', 'seconds', 'eval', 'play'];
+      const rows = [...marks]
+        .sort((a, b) => a.time - b.time)
+        .map(mark => [
+          formatTime(mark.time),
+          mark.time.toFixed(2),
+          mark.eval,
+          mark.play
+        ]);
+
+      const csv = [header, ...rows]
+        .map(row => row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(','))
+        .join('\n');
+
+      downloadTextFile('volley-video-check.csv', '\ufeff' + csv, 'text/csv;charset=utf-8;');
+    });
+
+    saveProjectButton.addEventListener('click', () => {
+      if (marks.length === 0) {
+        alert('保存するマーキングがありません。');
+        return;
+      }
+
+      const project = {
+        app: 'Volley Video Check',
+        version: '0.3',
+        savedAt: new Date().toISOString(),
+        video: currentVideoMeta,
+        marks: [...marks].sort((a, b) => a.time - b.time)
+      };
+
+      const safeName = currentVideoMeta.name
+        ? currentVideoMeta.name.replace(/\.[^/.]+$/, '').replace(/[\\/:*?"<>|]/g, '_')
+        : 'project';
+
+      downloadTextFile(
+        `vvc_${safeName}.json`,
+        JSON.stringify(project, null, 2),
+        'application/json;charset=utf-8;'
+      );
+    });
+
+    projectInput.addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const project = JSON.parse(reader.result);
+          if (!Array.isArray(project.marks)) {
+            alert('読み込めるコードファイルではありません。');
+            return;
+          }
+
+          const loadedVideo = project.video || {};
+          if (currentVideoMeta.name && loadedVideo.name && currentVideoMeta.name !== loadedVideo.name) {
+            const ok = confirm(
+              `保存時の動画名と現在の動画名が違います。\n\n保存時: ${loadedVideo.name}\n現在: ${currentVideoMeta.name}\n\nこのまま読み込みますか？`
+            );
+            if (!ok) return;
+          }
+
+          marks = project.marks.map((mark, index) => ({
+            id: mark.id || Date.now() + index,
+            time: Number(mark.time) || 0,
+            eval: mark.eval || 'Check',
+            play: mark.play || 'その他'
+          }));
+
+          renderMarks();
+          alert('コードを読み込みました。');
+        } catch (error) {
+          alert('コードファイルの読み込みに失敗しました。');
+        } finally {
+          projectInput.value = '';
+        }
+      };
+      reader.readAsText(file, 'utf-8');
+    });
+
+    renderMarks();
+  </script>
+</body>
+</html>
