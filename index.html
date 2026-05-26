@@ -33,6 +33,8 @@
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
       overscroll-behavior: none;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
@@ -41,6 +43,7 @@
 
     button, select, input {
       font: inherit;
+      touch-action: manipulation;
     }
 
     button {
@@ -110,9 +113,9 @@
       flex-direction: column;
     }
 
-    .video-topbar {
+    .video-sourcebar {
       padding: 12px;
-      border-bottom: 1px solid var(--line);
+      border-top: 1px solid var(--line);
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -361,7 +364,8 @@
       color: var(--bad);
     }
 
-    .jump-row {
+    .jump-row,
+    .speed-row {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -371,7 +375,8 @@
       padding: 10px;
     }
 
-    .jump-select {
+    .jump-select,
+    .speed-select {
       flex: 0 0 82px;
       min-height: 42px;
       border-radius: 12px;
@@ -383,7 +388,8 @@
       padding: 0 10px;
     }
 
-    .jump-label {
+    .jump-label,
+    .speed-label {
       font-size: 14px;
       color: var(--text);
       font-weight: 800;
@@ -491,6 +497,134 @@
       border-color: #fecaca;
     }
 
+
+    .memo-input {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      background: #fff;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .memo-text {
+      grid-column: 1 / -1;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 7px 8px;
+    }
+
+    .edit-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--main-dark);
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .code-actions {
+      display: flex;
+      gap: 5px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(17, 24, 39, 0.94);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      max-width: calc(100vw - 24px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .modal-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-row label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .modal select,
+    .modal input {
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 0 10px;
+      font-size: 16px;
+      background: #fff;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
     .empty {
       color: var(--muted);
       background: #f9fafb;
@@ -560,7 +694,7 @@
         align-items: start;
       }
 
-      .video-topbar {
+      .video-sourcebar {
         padding: 8px;
         gap: 6px;
       }
@@ -634,16 +768,19 @@
       }
 
       .jump-row,
+      .speed-row,
       .notice {
         padding: 8px;
         border-radius: 12px;
       }
 
-      .jump-select {
+      .jump-select,
+      .speed-select {
         min-height: 36px;
       }
 
       .jump-label,
+      .speed-label,
       .notice {
         font-size: 11px;
       }
@@ -723,12 +860,22 @@
         <h1>Volley Video Check</h1>
         <span>動画を見ながら、気になるプレーをすぐ記録</span>
       </div>
-      <div class="version">Prototype v0.6</div>
+      <div class="version">Prototype v0.8</div>
     </header>
 
     <main class="layout">
       <section class="video-panel">
-        <div class="video-topbar">
+        <div class="video-wrap">
+          <video id="video" playsinline controls></video>
+          <div id="youtubePlayer" class="hidden-player"></div>
+        </div>
+
+        <div class="time-row">
+          <span id="sourceLabel">ファイル動画</span>
+          <span id="currentTime" class="current-time">00:00</span>
+        </div>
+
+        <div class="video-sourcebar">
           <div class="source-tabs">
             <button id="fileTab" class="source-tab active" type="button">ファイル</button>
             <button id="youtubeTab" class="source-tab" type="button">YouTube URL</button>
@@ -747,16 +894,6 @@
             <button id="loadYoutubeButton" class="load-btn" type="button">読み込み</button>
           </div>
         </div>
-
-        <div class="video-wrap">
-          <video id="video" playsinline controls></video>
-          <div id="youtubePlayer" class="hidden-player"></div>
-        </div>
-
-        <div class="time-row">
-          <span id="sourceLabel">ファイル動画</span>
-          <span id="currentTime" class="current-time">00:00</span>
-        </div>
       </section>
 
       <aside class="side-panel">
@@ -772,13 +909,21 @@
 
         <section class="section">
           <div class="section-title">再生速度</div>
-          <div class="tile-grid speed-grid" id="speedButtons">
-            <button class="tile" data-speed="0.5">0.5x</button>
-            <button class="tile active" data-speed="1">1.0x</button>
-            <button class="tile" data-speed="1.5">1.5x</button>
-            <button class="tile" data-speed="2">2.0x</button>
+          <div class="speed-row">
+            <select id="speedSelect" class="speed-select">
+              <option value="0.5">0.5</option>
+              <option value="1" selected>1.0</option>
+              <option value="1.5">1.5</option>
+              <option value="2">2.0</option>
+            </select>
+            <span class="speed-label">倍速で再生</span>
           </div>
         </section>
+
+        <section class="section mark-section">
+          <button id="markButton" class="primary-btn">この場面をマーキング</button>
+        </section>
+
 
         <section class="section">
           <div class="section-title">評価</div>
@@ -803,7 +948,8 @@
         </section>
 
         <section class="section">
-          <button id="markButton" class="primary-btn">この場面をマーキング</button>
+          <div class="section-title">メモ</div>
+          <input id="memoInput" class="memo-input" type="text" placeholder="任意メモ（空欄でもOK）" />
         </section>
 
         <section class="section">
@@ -847,6 +993,11 @@
         </section>
 
         <section class="section">
+          <div class="section-title">現在の動画</div>
+          <div id="currentSourceInfo" class="notice">まだ動画が読み込まれていません。</div>
+        </section>
+
+        <section class="section">
           <div class="section-title">保存・読込</div>
           <div class="small-actions">
             <button id="saveProjectButton" class="sub-btn">コード保存</button>
@@ -862,7 +1013,10 @@
 
         <section class="section">
           <div class="small-actions">
+            <button id="undoButton" class="sub-btn">1つ戻す</button>
             <button id="csvButton" class="sub-btn">CSV出力</button>
+          </div>
+          <div class="small-actions">
             <button id="clearButton" class="sub-btn danger">全削除</button>
           </div>
         </section>
@@ -878,6 +1032,42 @@
         </section>
       </aside>
     </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="editModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-title">コード編集</div>
+      <div class="modal-row">
+        <label>評価</label>
+        <select id="editEval">
+          <option value="Good">Good</option>
+          <option value="Check">Check</option>
+          <option value="Bad">Bad</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <label>プレー種別</label>
+        <select id="editPlay">
+          <option value="アタック">アタック</option>
+          <option value="ブロック">ブロック</option>
+          <option value="サーブ">サーブ</option>
+          <option value="サーブレシーブ">サーブレシーブ</option>
+          <option value="ディグ">ディグ</option>
+          <option value="トス">トス</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <label>メモ</label>
+        <input id="editMemo" type="text" placeholder="任意メモ" />
+      </div>
+      <div class="modal-actions">
+        <button id="cancelEditButton" class="sub-btn" type="button">キャンセル</button>
+        <button id="saveEditButton" class="primary-btn" type="button">保存</button>
+      </div>
+    </div>
   </div>
 
   <script src="https://www.youtube.com/iframe_api"></script>
@@ -903,6 +1093,17 @@
     const youtubeSource = document.getElementById('youtubeSource');
     const youtubeUrl = document.getElementById('youtubeUrl');
     const loadYoutubeButton = document.getElementById('loadYoutubeButton');
+    const speedSelect = document.getElementById('speedSelect');
+    const memoInput = document.getElementById('memoInput');
+    const undoButton = document.getElementById('undoButton');
+    const currentSourceInfo = document.getElementById('currentSourceInfo');
+    const toast = document.getElementById('toast');
+    const editModal = document.getElementById('editModal');
+    const editEval = document.getElementById('editEval');
+    const editPlay = document.getElementById('editPlay');
+    const editMemo = document.getElementById('editMemo');
+    const cancelEditButton = document.getElementById('cancelEditButton');
+    const saveEditButton = document.getElementById('saveEditButton');
 
     let selectedEval = 'Good';
     let selectedPlay = 'アタック';
@@ -913,6 +1114,8 @@
     let sourceType = 'file';
     let youtubePlayer = null;
     let youtubeReady = false;
+    let editingMarkId = null;
+    const STORAGE_KEY = 'volleyVideoCheckDraftV08';
     let currentVideoMeta = {
       type: 'file',
       name: '',
@@ -969,6 +1172,85 @@
       URL.revokeObjectURL(url);
     }
 
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 1300);
+    }
+
+    function vibrateLight() {
+      if (navigator.vibrate) {
+        navigator.vibrate(25);
+      }
+    }
+
+    function updateCurrentSourceInfo() {
+      if (currentVideoMeta.type === 'youtube' && currentVideoMeta.youtubeUrl) {
+        currentSourceInfo.textContent = `YouTube：${currentVideoMeta.youtubeUrl}`;
+      } else if (currentVideoMeta.type === 'file' && currentVideoMeta.name) {
+        currentSourceInfo.textContent = `ファイル：${currentVideoMeta.name}`;
+      } else {
+        currentSourceInfo.textContent = 'まだ動画が読み込まれていません。';
+      }
+    }
+
+    function autoSaveDraft() {
+      const draft = {
+        app: 'Volley Video Check',
+        version: '0.8',
+        savedAt: new Date().toISOString(),
+        video: currentVideoMeta,
+        marks,
+        sourceType
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
+    }
+
+    function restoreDraft() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const draft = JSON.parse(raw);
+        if (Array.isArray(draft.marks)) {
+          marks = draft.marks.map((mark, index) => ({
+            id: mark.id || Date.now() + index,
+            time: Number(mark.time) || 0,
+            eval: mark.eval || 'Check',
+            play: mark.play || 'その他',
+            memo: mark.memo || ''
+          }));
+        }
+
+        if (draft.video) {
+          currentVideoMeta = { ...currentVideoMeta, ...draft.video };
+          if (currentVideoMeta.type === 'youtube' && currentVideoMeta.youtubeUrl) {
+            youtubeUrl.value = currentVideoMeta.youtubeUrl;
+          }
+        }
+
+        updateCurrentSourceInfo();
+        renderMarks();
+      } catch (error) {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    function openEditModal(markId) {
+      const mark = marks.find(item => item.id === markId);
+      if (!mark) return;
+      editingMarkId = markId;
+      editEval.value = mark.eval || 'Check';
+      editPlay.value = mark.play || 'その他';
+      editMemo.value = mark.memo || '';
+      editModal.classList.add('show');
+    }
+
+    function closeEditModal() {
+      editingMarkId = null;
+      editModal.classList.remove('show');
+    }
+
     function getYoutubeId(url) {
       try {
         const parsed = new URL(url.trim());
@@ -996,6 +1278,7 @@
         video.classList.remove('hidden-player');
         youtubePlayerEl.classList.add('hidden-player');
         sourceLabel.textContent = 'ファイル動画';
+        updateCurrentSourceInfo();
         if (youtubePlayer && youtubePlayer.pauseVideo) youtubePlayer.pauseVideo();
       } else {
         youtubeTab.classList.add('active');
@@ -1005,6 +1288,7 @@
         video.classList.add('hidden-player');
         youtubePlayerEl.classList.remove('hidden-player');
         sourceLabel.textContent = 'YouTube';
+        updateCurrentSourceInfo();
         video.pause();
       }
     }
@@ -1084,7 +1368,11 @@
               <span class="tag ${cls}">${mark.eval}</span>
               <span class="tag">${mark.play}</span>
             </div>
-            <button class="delete-mark" type="button" title="このコードを削除">×</button>
+            <div class="code-actions">
+              <button class="edit-mark" type="button" title="このコードを編集">✎</button>
+              <button class="delete-mark" type="button" title="このコードを削除">×</button>
+            </div>
+            ${mark.memo ? `<div class="memo-text">${mark.memo.replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}</div>` : ''}
           `;
 
           card.addEventListener('click', () => {
@@ -1092,10 +1380,16 @@
             playMedia();
           });
 
+          card.querySelector('.edit-mark').addEventListener('click', event => {
+            event.stopPropagation();
+            openEditModal(mark.id);
+          });
+
           card.querySelector('.delete-mark').addEventListener('click', event => {
             event.stopPropagation();
             if (!confirm(`${formatTime(mark.time)} ${mark.eval} ${mark.play} を削除しますか？`)) return;
             marks = marks.filter(item => item.id !== mark.id);
+            autoSaveDraft();
             renderMarks();
           });
 
@@ -1121,6 +1415,8 @@
         youtubeUrl: '',
         youtubeId: ''
       };
+      updateCurrentSourceInfo();
+      autoSaveDraft();
       video.load();
     });
 
@@ -1145,6 +1441,9 @@
         youtubeUrl: url,
         youtubeId: id
       };
+
+      updateCurrentSourceInfo();
+      autoSaveDraft();
 
       if (youtubePlayer && youtubePlayer.loadVideoById) {
         youtubePlayer.loadVideoById(id);
@@ -1189,12 +1488,8 @@
       });
     });
 
-    document.querySelectorAll('[data-speed]').forEach(button => {
-      button.addEventListener('click', () => {
-        const speed = Number(button.dataset.speed);
-        setPlaybackRate(speed);
-        setActive('speedButtons', button);
-      });
+    speedSelect.addEventListener('change', () => {
+      setPlaybackRate(Number(speedSelect.value));
     });
 
     document.querySelectorAll('[data-eval]').forEach(button => {
@@ -1257,9 +1552,25 @@
         id: Date.now() + Math.floor(Math.random() * 1000),
         time,
         eval: selectedEval,
-        play: selectedPlay
+        play: selectedPlay,
+        memo: memoInput.value.trim()
       });
 
+      showToast(`${formatTime(time)} ${selectedEval} ${selectedPlay} を追加`);
+      vibrateLight();
+      memoInput.value = '';
+      autoSaveDraft();
+      renderMarks();
+    });
+
+    undoButton.addEventListener('click', () => {
+      if (marks.length === 0) {
+        alert('戻すマーキングがありません。');
+        return;
+      }
+      const removed = marks.pop();
+      showToast(`${formatTime(removed.time)} のマーキングを戻しました`);
+      autoSaveDraft();
       renderMarks();
     });
 
@@ -1267,6 +1578,7 @@
       if (marks.length === 0) return;
       if (!confirm('すべてのマーキングを削除しますか？')) return;
       marks = [];
+      autoSaveDraft();
       renderMarks();
     });
 
@@ -1276,7 +1588,7 @@
         return;
       }
 
-      const header = ['timecode', 'seconds', 'eval', 'play', 'source_type', 'source'];
+      const header = ['timecode', 'seconds', 'eval', 'play', 'memo', 'source_type', 'source'];
       const source = currentVideoMeta.type === 'youtube'
         ? currentVideoMeta.youtubeUrl
         : currentVideoMeta.name;
@@ -1288,6 +1600,7 @@
           mark.time.toFixed(2),
           mark.eval,
           mark.play,
+          mark.memo || '',
           currentVideoMeta.type,
           source
         ]);
@@ -1309,7 +1622,7 @@
 
       const project = {
         app: 'Volley Video Check',
-        version: '0.6',
+        version: '0.8',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
@@ -1359,9 +1672,12 @@
             id: mark.id || Date.now() + index,
             time: Number(mark.time) || 0,
             eval: mark.eval || 'Check',
-            play: mark.play || 'その他'
+            play: mark.play || 'その他',
+            memo: mark.memo || ''
           }));
 
+          updateCurrentSourceInfo();
+          autoSaveDraft();
           renderMarks();
           alert('コードを読み込みました。');
         } catch (error) {
@@ -1373,8 +1689,41 @@
       reader.readAsText(file, 'utf-8');
     });
 
+    cancelEditButton.addEventListener('click', closeEditModal);
+
+    editModal.addEventListener('click', event => {
+      if (event.target === editModal) closeEditModal();
+    });
+
+    saveEditButton.addEventListener('click', () => {
+      const mark = marks.find(item => item.id === editingMarkId);
+      if (!mark) return;
+      mark.eval = editEval.value;
+      mark.play = editPlay.value;
+      mark.memo = editMemo.value.trim();
+      autoSaveDraft();
+      renderMarks();
+      closeEditModal();
+      showToast('コードを編集しました');
+    });
+
+    // iPhoneで連続タップ時に画面が拡大されるのを抑制
+    document.addEventListener('dblclick', event => {
+      event.preventDefault();
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', event => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
     updateJumpLabel();
     switchSource('file');
+    restoreDraft();
     renderMarks();
   </script>
 </body>
