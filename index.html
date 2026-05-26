@@ -534,6 +534,42 @@
     }
 
 
+
+    .simple-collapse-toggle {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 14px;
+      background: #eef2ff;
+      border: 2px solid #dbeafe;
+      color: #1d4ed8;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+
+    .simple-collapse-toggle .sub {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 54%;
+      text-align: right;
+    }
+
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .simple-hidden {
+      display: none !important;
+    }
+
     .memo-input {
       width: 100%;
       min-height: 44px;
@@ -896,7 +932,7 @@
         <h1>Volley Video Check</h1>
         <span>動画を見ながら、気になるプレーをすぐ記録</span>
       </div>
-      <div class="version">Prototype v0.9</div>
+      <div class="version">Prototype v2.0</div>
     </header>
 
     <main class="layout">
@@ -968,34 +1004,13 @@
         </section>
 
 
-        <section class="section">
-          <div class="section-title">評価</div>
-          <div class="tile-grid eval-grid" id="evalButtons">
-            <button class="tile good active" data-eval="Good">Good</button>
-            <button class="tile check" data-eval="Check">Check</button>
-            <button class="tile bad" data-eval="Bad">Bad</button>
-          </div>
-        </section>
+        <button id="filterToggleSimple" class="simple-collapse-toggle" type="button">
+          <span id="filterToggleText">検索・ジャンプ設定 ▼</span>
+          <span id="filterSummary" class="sub">ALL / ALL / 2秒前</span>
+        </button>
 
-        <section class="section">
-          <div class="section-title">プレー種別</div>
-          <div class="tile-grid play-grid" id="playButtons">
-            <button class="tile active" data-play="アタック">アタック</button>
-            <button class="tile" data-play="ブロック">ブロック</button>
-            <button class="tile" data-play="サーブ">サーブ</button>
-            <button class="tile" data-play="サーブレシーブ">サーブレシーブ</button>
-            <button class="tile" data-play="ディグ">ディグ</button>
-            <button class="tile" data-play="トス">トス</button>
-            <button class="tile" data-play="その他">その他</button>
-          </div>
-        </section>
-
-        <section class="section">
-          <div class="section-title">メモ</div>
-          <input id="memoInput" class="memo-input" type="text" placeholder="任意メモ（空欄でもOK）" />
-        </section>
-
-        <section class="section">
+        <div id="filterSettingsGroup" class="settings-group">
+        <section class="section filter-setting-section">
           <div class="section-title">ジャンプ開始位置</div>
           <div class="jump-row">
             <select id="jumpSelect" class="jump-select">
@@ -1015,8 +1030,8 @@
           </div>
         </section>
 
-        <section class="section">
-          <div class="section-title">検索フィルター</div>
+        <section class="section filter-setting-section" style="display:flex !important;border:2px solid #dbeafe;border-radius:14px;padding:10px;">
+          <div class="section-title" style="font-size:14px;color:#1d4ed8;">検索フィルタ</div>
           <div class="tile-grid filter-eval-grid" id="filterEvalButtons">
             <button class="tile active" data-filter-eval="ALL">ALL</button>
             <button class="tile good" data-filter-eval="Good">Good</button>
@@ -1034,6 +1049,8 @@
             <button class="tile" data-filter-play="その他">その他</button>
           </div>
         </section>
+
+        </div>
 
         <section class="section">
           <div class="section-title">現在の動画</div>
@@ -1078,6 +1095,45 @@
   </div>
 
   <div id="toast" class="toast"></div>
+
+
+  <div id="markModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-title">この場面をマーキング</div>
+      <div class="modal-row">
+        <label>タイムコード</label>
+        <input id="markTimeDisplay" type="text" readonly />
+      </div>
+      <div class="modal-row">
+        <label>評価</label>
+        <select id="markEval">
+          <option value="Good">Good</option>
+          <option value="Check">Check</option>
+          <option value="Bad">Bad</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <label>プレー種別</label>
+        <select id="markPlay">
+          <option value="アタック">アタック</option>
+          <option value="ブロック">ブロック</option>
+          <option value="サーブ">サーブ</option>
+          <option value="サーブレシーブ">サーブレシーブ</option>
+          <option value="ディグ">ディグ</option>
+          <option value="トス">トス</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <label>メモ</label>
+        <input id="markMemo" type="text" placeholder="任意メモ" />
+      </div>
+      <div class="modal-actions">
+        <button id="cancelMarkButton" class="sub-btn" type="button">キャンセル</button>
+        <button id="saveMarkButton" class="primary-btn" type="button">保存</button>
+      </div>
+    </div>
+  </div>
 
   <div id="editModal" class="modal-backdrop">
     <div class="modal">
@@ -1137,6 +1193,14 @@
     const youtubeUrl = document.getElementById('youtubeUrl');
     const loadYoutubeButton = document.getElementById('loadYoutubeButton');
     const speedSelect = document.getElementById('speedSelect');
+    const markingToggleSimple = document.getElementById('markingToggleSimple');
+    const markingToggleText = document.getElementById('markingToggleText');
+    const markingSummary = document.getElementById('markingSummary');
+    const filterToggleSimple = document.getElementById('filterToggleSimple');
+    const filterToggleText = document.getElementById('filterToggleText');
+    const filterSummary = document.getElementById('filterSummary');
+    const markingSettingsGroup = document.getElementById('markingSettingsGroup');
+    const filterSettingsGroup = document.getElementById('filterSettingsGroup');
     const sourceToggle = document.getElementById('sourceToggle');
     const sourceToggleTitle = document.getElementById('sourceToggleTitle');
     const sourceSummary = document.getElementById('sourceSummary');
@@ -1145,6 +1209,13 @@
     const undoButton = document.getElementById('undoButton');
     const currentSourceInfo = document.getElementById('currentSourceInfo');
     const toast = document.getElementById('toast');
+    const markModal = document.getElementById('markModal');
+    const markTimeDisplay = document.getElementById('markTimeDisplay');
+    const markEval = document.getElementById('markEval');
+    const markPlay = document.getElementById('markPlay');
+    const markMemo = document.getElementById('markMemo');
+    const cancelMarkButton = document.getElementById('cancelMarkButton');
+    const saveMarkButton = document.getElementById('saveMarkButton');
     const editModal = document.getElementById('editModal');
     const editEval = document.getElementById('editEval');
     const editPlay = document.getElementById('editPlay');
@@ -1162,8 +1233,12 @@
     let youtubePlayer = null;
     let youtubeReady = false;
     let editingMarkId = null;
+    let pendingMarkTime = null;
+    let wasPlayingBeforeMark = false;
     let sourceOpen = false;
-    const STORAGE_KEY = 'volleyVideoCheckDraftV09';
+    let markingSimpleOpen = true;
+    let filterSimpleOpen = true;
+    const STORAGE_KEY = 'volleyVideoCheckDraftV17';
     let currentVideoMeta = {
       type: 'file',
       name: '',
@@ -1252,10 +1327,34 @@
       sourceToggleTitle.textContent = sourceOpen ? '動画ソース ▼' : '動画ソース ▸';
     }
 
+    function jumpOffsetText() {
+      if (jumpOffset < 0) return `${Math.abs(jumpOffset)}秒前`;
+      if (jumpOffset > 0) return `${jumpOffset}秒後`;
+      return '0秒';
+    }
+
+    function updateFilterSummary() {
+      if (filterSummary) filterSummary.textContent = `${filterEval} / ${filterPlay} / ${jumpOffsetText()}`;
+    }
+
+    function setFilterSimpleOpen(open) {
+      filterSimpleOpen = open;
+      if (filterSettingsGroup) {
+        filterSettingsGroup.classList.toggle('simple-hidden', !filterSimpleOpen);
+      } else {
+        document.querySelectorAll('.filter-setting-section').forEach(el => {
+          el.classList.toggle('simple-hidden', !filterSimpleOpen);
+        });
+      }
+      if (filterToggleText) {
+        filterToggleText.textContent = filterSimpleOpen ? '検索・ジャンプ設定 ▼' : '検索・ジャンプ設定 ▸';
+      }
+    }
+
     function autoSaveDraft() {
       const draft = {
         app: 'Volley Video Check',
-        version: '0.9',
+        version: '2.0',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks,
@@ -1458,6 +1557,7 @@
       setSourceOpen(!sourceOpen);
     });
 
+
     fileTab.addEventListener('click', () => switchSource('file'));
     youtubeTab.addEventListener('click', () => switchSource('youtube'));
 
@@ -1559,14 +1659,14 @@
       button.addEventListener('click', () => {
         selectedEval = button.dataset.eval;
         setActive('evalButtons', button);
-      });
+          });
     });
 
     document.querySelectorAll('[data-play]').forEach(button => {
       button.addEventListener('click', () => {
         selectedPlay = button.dataset.play;
         setActive('playButtons', button);
-      });
+          });
     });
 
     function updateJumpLabel() {
@@ -1582,12 +1682,14 @@
     jumpSelect.addEventListener('change', () => {
       jumpOffset = Number(jumpSelect.value);
       updateJumpLabel();
+      updateFilterSummary();
     });
 
     document.querySelectorAll('[data-filter-eval]').forEach(button => {
       button.addEventListener('click', () => {
         filterEval = button.dataset.filterEval;
         setActive('filterEvalButtons', button);
+        updateFilterSummary();
         renderMarks();
       });
     });
@@ -1596,12 +1698,12 @@
       button.addEventListener('click', () => {
         filterPlay = button.dataset.filterPlay;
         setActive('filterPlayButtons', button);
+        updateFilterSummary();
         renderMarks();
       });
     });
 
-    markButton.addEventListener('click', () => {
-      const time = getCurrentTime();
+    function openMarkModal() {
       const hasSource = sourceType === 'youtube'
         ? Boolean(currentVideoMeta.youtubeId)
         : Boolean(video.src);
@@ -1611,19 +1713,64 @@
         return;
       }
 
+      pendingMarkTime = getCurrentTime();
+      wasPlayingBeforeMark = sourceType === 'youtube'
+        ? true
+        : !video.paused;
+
+      pauseMedia();
+
+      markTimeDisplay.value = formatTime(pendingMarkTime);
+      markEval.value = selectedEval || 'Good';
+      markPlay.value = selectedPlay || 'アタック';
+      markMemo.value = memoInput ? memoInput.value.trim() : '';
+      markModal.classList.add('show');
+    }
+
+    function closeMarkModal() {
+      pendingMarkTime = null;
+      markModal.classList.remove('show');
+    }
+
+    function saveMarkFromModal() {
+      if (pendingMarkTime === null) return;
+
+      selectedEval = markEval.value;
+      selectedPlay = markPlay.value;
+
       marks.push({
         id: Date.now() + Math.floor(Math.random() * 1000),
-        time,
-        eval: selectedEval,
-        play: selectedPlay,
-        memo: memoInput.value.trim()
+        time: pendingMarkTime,
+        eval: markEval.value,
+        play: markPlay.value,
+        memo: markMemo.value.trim()
       });
 
-      showToast(`${formatTime(time)} ${selectedEval} ${selectedPlay} を追加`);
+      showToast(`${formatTime(pendingMarkTime)} ${markEval.value} ${markPlay.value} を追加`);
       vibrateLight();
-      memoInput.value = '';
       autoSaveDraft();
       renderMarks();
+      closeMarkModal();
+
+      if (wasPlayingBeforeMark) {
+        playMedia();
+      }
+    }
+
+    markButton.addEventListener('click', openMarkModal);
+
+    cancelMarkButton.addEventListener('click', () => {
+      closeMarkModal();
+      if (wasPlayingBeforeMark) playMedia();
+    });
+
+    saveMarkButton.addEventListener('click', saveMarkFromModal);
+
+    markModal.addEventListener('click', event => {
+      if (event.target === markModal) {
+        closeMarkModal();
+        if (wasPlayingBeforeMark) playMedia();
+      }
     });
 
     undoButton.addEventListener('click', () => {
@@ -1685,7 +1832,7 @@
 
       const project = {
         app: 'Volley Video Check',
-        version: '0.9',
+        version: '2.0',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
@@ -1785,7 +1932,25 @@
     }, { passive: false });
 
     updateJumpLabel();
+    updateFilterSummary();
+
+    // 初期状態
+    setFilterSimpleOpen(true);
     setSourceOpen(false);
+
+    // 表示/非表示ボタン
+    if (markingToggleSimple) {
+      markingToggleSimple.addEventListener('click', () => {
+        setMarkingSimpleOpen(!markingSimpleOpen);
+      });
+    }
+
+    if (filterToggleSimple) {
+      filterToggleSimple.addEventListener('click', () => {
+        setFilterSimpleOpen(!filterSimpleOpen);
+      });
+    }
+
     switchSource('file');
     restoreDraft();
     renderMarks();
