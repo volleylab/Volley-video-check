@@ -284,6 +284,287 @@
       gap: 14px;
     }
 
+
+
+    @media (min-width: 900px) {
+      .sticky-mode-tabs {
+        position: sticky;
+        top: 0;
+        z-index: 12;
+        background: var(--panel);
+        padding-bottom: 4px;
+      }
+
+      .sticky-control-section {
+        position: sticky;
+        z-index: 10;
+        background: var(--panel);
+        padding-bottom: 4px;
+      }
+
+      /* Mark mode */
+      .side-panel.mark-mode .sticky-control-section:nth-of-type(2) {
+        top: 74px;
+      }
+
+      .side-panel.mark-mode .sticky-control-section:nth-of-type(3) {
+        top: 148px;
+      }
+
+      .side-panel.mark-mode .sticky-control-section:nth-of-type(4) {
+        top: 222px;
+      }
+
+      /* View mode */
+      .side-panel.view-mode .sticky-control-section:nth-of-type(2) {
+        top: 74px;
+      }
+
+      .side-panel.view-mode .sticky-control-section:nth-of-type(3) {
+        top: 148px;
+      }
+    }
+
+    .side-panel.view-mode .mark-only {
+      display: none !important;
+    }
+
+
+    @media (min-width: 900px) {
+      .sticky-mode-tabs,
+      .sticky-control-section {
+        background: #ffffff !important;
+        border: 1px solid rgba(229, 231, 235, 0.95);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 8px;
+        margin-bottom: 8px;
+        opacity: 1;
+      }
+
+      .sticky-mode-tabs::before,
+      .sticky-control-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+        border-radius: 14px;
+        z-index: -1;
+      }
+
+      .side-panel.view-mode,
+      .side-panel.mark-mode {
+        background: #ffffff;
+      }
+
+  
+    @media (min-width: 900px) {
+      .sticky-mode-tabs,
+      .sticky-control-section {
+        position: static !important;
+        top: auto !important;
+        z-index: auto !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+        border-radius: 0 !important;
+      }
+
+      .fixed-control-group {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: #ffffff;
+        border: 1px solid rgba(229, 231, 235, 0.95);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+        border-radius: 16px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fixed-control-group .section {
+        margin: 0;
+      }
+    }
+
+
+    .side-panel.view-mode .notice.mark-only {
+      display: none !important;
+    }
+
+
+    .side-panel.view-mode #saveLoadSection {
+      display: none !important;
+    }
+
+
+    .count-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .count-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f9fafb;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .count-pill.good {
+      background: #dcfce7;
+      color: var(--good);
+      border-color: #bbf7d0;
+    }
+
+    .count-pill.check {
+      background: #fef3c7;
+      color: var(--check);
+      border-color: #fde68a;
+    }
+
+    .count-pill.bad {
+      background: #fee2e2;
+      color: var(--bad);
+      border-color: #fecaca;
+    }
+
+    .code-card.selected {
+      outline: 3px solid rgba(37, 99, 235, 0.35);
+      background: #eff6ff;
+      transform: translateX(2px);
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .app {
+        padding: 6px;
+      }
+
+      .layout {
+        grid-template-columns: minmax(0, 72%) minmax(250px, 28%);
+        gap: 6px;
+      }
+
+      .video-wrap {
+        max-height: calc(100vh - 92px);
+      }
+
+      .video-sourcebar {
+        padding: 6px;
+      }
+
+      .fixed-control-group {
+        padding: 6px !important;
+        gap: 6px !important;
+        border-radius: 12px !important;
+      }
+
+      .side-panel {
+        padding: 6px;
+        gap: 8px;
+        max-height: calc(100vh - 16px);
+      }
+
+      .count-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .code-list {
+        max-height: 42vh;
+      }
+
+      .section-title {
+        font-size: 11px;
+      }
+    }
+
+    .mode-tabs {
+        background: #ffffff !important;
+        padding-bottom: 0;
+      }
+    }
+
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--panel);
+      padding-bottom: 2px;
+    }
+
+    .mode-tab {
+      min-height: 46px;
+      border-radius: 14px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 900;
+    }
+
+    .mode-tab.active {
+      background: #dbeafe;
+      border-color: var(--main);
+      color: var(--main-dark);
+    }
+
+    .mode-hint {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.45;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 10px;
+    }
+
+    .side-panel.view-mode .mark-only {
+      display: none !important;
+    }
+
+
+    .side-panel.view-mode .mode-hint {
+      display: none;
+    }
+
+    .side-panel.view-mode .code-list {
+      max-height: 58vh;
+    }
+
+    @media (min-width: 900px) {
+      .side-panel.view-mode .code-list {
+        max-height: 56vh;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .mode-tab {
+        min-height: 36px;
+        border-radius: 10px;
+        font-size: 12px;
+      }
+
+      .mode-hint {
+        display: none;
+      }
+
+      .side-panel.view-mode .code-list {
+        max-height: 46vh;
+      }
+    }
+
     .section {
       display: flex;
       flex-direction: column;
@@ -923,16 +1204,21 @@
         max-height: none;
       }
     }
-  </style>
+      .side-panel.view-mode .mark-only,
+    .side-panel.view-mode section.mark-only,
+    .side-panel.view-mode .notice.mark-only {
+      display: none !important;
+    }
+</style>
 </head>
 <body>
   <div class="app">
     <header class="app-header">
       <div class="brand">
         <h1>Volley Video Check</h1>
-        <span>動画を見ながら、気になるプレーをすぐ記録</span>
+        <span>映像をチェックしながら、気になるプレーを記録・確認</span>
       </div>
-      <div class="version">Prototype v2.0</div>
+      <div class="version">Beta 1.0</div>
     </header>
 
     <main class="layout">
@@ -975,8 +1261,17 @@
         </div>
       </section>
 
-      <aside class="side-panel">
-        <section class="section">
+      <aside id="sidePanel" class="side-panel mark-mode">
+        <div class="fixed-control-group">
+        <section class="section sticky-mode-tabs">
+          <div class="mode-tabs">
+            <button id="markModeButton" class="mode-tab active" type="button">Mark</button>
+            <button id="viewModeButton" class="mode-tab" type="button">View</button>
+          </div>
+          <div id="modeHint" class="mode-hint">Mark：映像を見ながらコードを記録します。</div>
+        </section>
+
+        <section class="section sticky-control-section">
           <div class="section-title">動画操作</div>
           <div class="tile-grid controls-grid">
             <button class="tile" data-action="play">▶ 再生</button>
@@ -986,7 +1281,7 @@
           </div>
         </section>
 
-        <section class="section">
+        <section class="section sticky-control-section">
           <div class="section-title">再生速度</div>
           <div class="speed-row">
             <select id="speedSelect" class="speed-select">
@@ -999,9 +1294,11 @@
           </div>
         </section>
 
-        <section class="section mark-section">
+        <section class="section mark-section mark-only sticky-control-section">
           <button id="markButton" class="primary-btn">この場面をマーキング</button>
         </section>
+        </div>
+
 
 
         <button id="filterToggleSimple" class="simple-collapse-toggle" type="button">
@@ -1052,12 +1349,7 @@
 
         </div>
 
-        <section class="section">
-          <div class="section-title">現在の動画</div>
-          <div id="currentSourceInfo" class="notice">まだ動画が読み込まれていません。</div>
-        </section>
-
-        <section class="section">
+<section id="saveLoadSection" class="section mark-only">
           <div class="section-title">保存・読込</div>
           <div class="small-actions">
             <button id="saveProjectButton" class="sub-btn">コード保存</button>
@@ -1066,12 +1358,12 @@
               <input id="projectInput" type="file" accept=".json,application/json" style="display:none;" />
             </label>
           </div>
-          <div class="notice">
+          <div class="notice mark-only">
             ファイル動画はコピー保存されません。YouTubeの場合はURLを保存します。次回は動画ソースとコードファイルを読み込むとタイムコードが復元されます。
           </div>
         </section>
 
-        <section class="section">
+        <section class="section mark-only">
           <div class="small-actions">
             <button id="undoButton" class="sub-btn">1つ戻す</button>
             <button id="csvButton" class="sub-btn">CSV出力</button>
@@ -1081,7 +1373,7 @@
           </div>
         </section>
 
-        <section class="section">
+        <section class="section view-focus">
           <div class="section-title">
             コードウインドウ
             <span id="counter" class="counter">0件</span>
@@ -1177,6 +1469,10 @@
     const fileName = document.getElementById('fileName');
     const currentTimeEl = document.getElementById('currentTime');
     const sourceLabel = document.getElementById('sourceLabel');
+    const sidePanel = document.getElementById('sidePanel');
+    const markModeButton = document.getElementById('markModeButton');
+    const viewModeButton = document.getElementById('viewModeButton');
+    const modeHint = document.getElementById('modeHint');
     const markButton = document.getElementById('markButton');
     const codeList = document.getElementById('codeList');
     const counter = document.getElementById('counter');
@@ -1223,6 +1519,8 @@
     const cancelEditButton = document.getElementById('cancelEditButton');
     const saveEditButton = document.getElementById('saveEditButton');
 
+    let currentMode = 'mark';
+    let selectedMarkId = null;
     let selectedEval = 'Good';
     let selectedPlay = 'アタック';
     let jumpOffset = -2;
@@ -1238,7 +1536,7 @@
     let sourceOpen = false;
     let markingSimpleOpen = true;
     let filterSimpleOpen = true;
-    const STORAGE_KEY = 'volleyVideoCheckDraftV17';
+    const STORAGE_KEY = 'volleyVideoCheckBeta10';
     let currentVideoMeta = {
       type: 'file',
       name: '',
@@ -1310,13 +1608,13 @@
 
     function updateCurrentSourceInfo() {
       if (currentVideoMeta.type === 'youtube' && currentVideoMeta.youtubeUrl) {
-        currentSourceInfo.textContent = `YouTube：${currentVideoMeta.youtubeUrl}`;
+        if (currentSourceInfo) currentSourceInfo.textContent = `YouTube：${currentVideoMeta.youtubeUrl}`;
         sourceSummary.textContent = 'YouTube';
       } else if (currentVideoMeta.type === 'file' && currentVideoMeta.name) {
-        currentSourceInfo.textContent = `ファイル：${currentVideoMeta.name}`;
+        if (currentSourceInfo) currentSourceInfo.textContent = `ファイル：${currentVideoMeta.name}`;
         sourceSummary.textContent = currentVideoMeta.name;
       } else {
-        currentSourceInfo.textContent = 'まだ動画が読み込まれていません。';
+        if (currentSourceInfo) currentSourceInfo.textContent = 'まだ動画が読み込まれていません。';
         sourceSummary.textContent = '未読込';
       }
     }
@@ -1354,7 +1652,7 @@
     function autoSaveDraft() {
       const draft = {
         app: 'Volley Video Check',
-        version: '2.0',
+        version: 'beta 1.0',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks,
@@ -1368,15 +1666,19 @@
       if (!raw) return;
       try {
         const draft = JSON.parse(raw);
-        if (Array.isArray(draft.marks)) {
-          marks = draft.marks.map((mark, index) => ({
-            id: mark.id || Date.now() + index,
-            time: Number(mark.time) || 0,
-            eval: mark.eval || 'Check',
-            play: mark.play || 'その他',
-            memo: mark.memo || ''
-          }));
-        }
+        if (!Array.isArray(draft.marks) || draft.marks.length === 0) return;
+
+        const savedAt = draft.savedAt ? new Date(draft.savedAt).toLocaleString('ja-JP') : '';
+        const ok = confirm(`前回のコードデータが残っています。\n${savedAt ? '保存日時：' + savedAt + '\n' : ''}\n復元しますか？`);
+        if (!ok) return;
+
+        marks = draft.marks.map((mark, index) => ({
+          id: mark.id || Date.now() + index,
+          time: Number(mark.time) || 0,
+          eval: mark.eval || 'Check',
+          play: mark.play || 'その他',
+          memo: mark.memo || ''
+        }));
 
         if (draft.video) {
           currentVideoMeta = { ...currentVideoMeta, ...draft.video };
@@ -1387,6 +1689,7 @@
 
         updateCurrentSourceInfo();
         renderMarks();
+        showToast('前回データを復元しました');
       } catch (error) {
         localStorage.removeItem(STORAGE_KEY);
       }
@@ -1496,6 +1799,25 @@
       }
     }
 
+    function setMode(mode) {
+      currentMode = mode;
+      const isView = mode === 'view';
+
+      sidePanel.classList.toggle('view-mode', isView);
+      sidePanel.classList.toggle('mark-mode', !isView);
+
+      markModeButton.classList.toggle('active', !isView);
+      viewModeButton.classList.toggle('active', isView);
+
+      modeHint.textContent = isView
+        ? 'View：コード検索から映像を確認します。'
+        : 'Mark：映像を見ながらコードを記録します。';
+
+      if (isView && typeof setFilterSimpleOpen === 'function') {
+        setFilterSimpleOpen(true);
+      }
+    }
+
     function renderMarks() {
       const filtered = marks.filter(mark => {
         const evalOk = filterEval === 'ALL' || mark.eval === filterEval;
@@ -1503,20 +1825,33 @@
         return evalOk && playOk;
       });
 
+      const goodCount = filtered.filter(mark => mark.eval === 'Good').length;
+      const checkCount = filtered.filter(mark => mark.eval === 'Check').length;
+      const badCount = filtered.filter(mark => mark.eval === 'Bad').length;
+
       counter.textContent = `${filtered.length}件`;
 
+      const summaryHtml = `
+        <div class="count-summary">
+          <div class="count-pill">ALL ${filtered.length}</div>
+          <div class="count-pill good">Good ${goodCount}</div>
+          <div class="count-pill check">Check ${checkCount}</div>
+          <div class="count-pill bad">Bad ${badCount}</div>
+        </div>
+      `;
+
       if (filtered.length === 0) {
-        codeList.innerHTML = '<div class="empty">該当するマーキングがありません。</div>';
+        codeList.innerHTML = summaryHtml + '<div class="empty">該当するマーキングがありません。</div>';
         return;
       }
 
-      codeList.innerHTML = '';
+      codeList.innerHTML = summaryHtml;
       filtered
         .sort((a, b) => a.time - b.time)
         .forEach(mark => {
           const card = document.createElement('button');
           const cls = evalClass(mark.eval);
-          card.className = `code-card ${cls}`;
+          card.className = `code-card ${cls}${mark.id === selectedMarkId ? ' selected' : ''}`;
           card.type = 'button';
           card.innerHTML = `
             <div class="code-time">${formatTime(mark.time)}</div>
@@ -1532,8 +1867,10 @@
           `;
 
           card.addEventListener('click', () => {
+            selectedMarkId = mark.id;
             seekTo(mark.time + jumpOffset);
             playMedia();
+            renderMarks();
           });
 
           card.querySelector('.edit-mark').addEventListener('click', event => {
@@ -1545,6 +1882,7 @@
             event.stopPropagation();
             if (!confirm(`${formatTime(mark.time)} ${mark.eval} ${mark.play} を削除しますか？`)) return;
             marks = marks.filter(item => item.id !== mark.id);
+            if (selectedMarkId === mark.id) selectedMarkId = null;
             autoSaveDraft();
             renderMarks();
           });
@@ -1557,6 +1895,9 @@
       setSourceOpen(!sourceOpen);
     });
 
+
+    markModeButton.addEventListener('click', () => setMode('mark'));
+    viewModeButton.addEventListener('click', () => setMode('view'));
 
     fileTab.addEventListener('click', () => switchSource('file'));
     youtubeTab.addEventListener('click', () => switchSource('youtube'));
@@ -1681,7 +2022,8 @@
 
     jumpSelect.addEventListener('change', () => {
       jumpOffset = Number(jumpSelect.value);
-      updateJumpLabel();
+      setMode('mark');
+    updateJumpLabel();
       updateFilterSummary();
     });
 
@@ -1832,7 +2174,7 @@
 
       const project = {
         app: 'Volley Video Check',
-        version: '2.0',
+        version: 'beta 1.0',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
