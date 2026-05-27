@@ -1310,6 +1310,41 @@
       }
     }
 
+
+    /* ホーム画面追加/PWA時の軽量モード：動画再生の負荷を下げる */
+    body.standalone-light-mode .fixed-control-group {
+      position: static !important;
+      top: auto !important;
+      z-index: auto !important;
+      box-shadow: none !important;
+    }
+
+    body.standalone-light-mode .sticky-mode-tabs,
+    body.standalone-light-mode .sticky-control-section {
+      position: static !important;
+      top: auto !important;
+      z-index: auto !important;
+    }
+
+    body.standalone-light-mode .side-panel {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body.standalone-light-mode .side-panel.view-mode .code-list,
+    body.standalone-light-mode .side-panel.mark-mode .code-list {
+      max-height: none;
+    }
+
+    body.standalone-light-mode .mode-hint::after {
+      content: "（ホーム画面版は軽量モード）";
+      display: block;
+      margin-top: 3px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
 </style>
 </head>
 <body>
@@ -1319,7 +1354,7 @@
         <h1>Volley Video Check</h1>
         <span>映像をチェックしながら、気になるプレーを記録・確認</span>
       </div>
-      <div class="version">Beta 1.2</div>
+      <div class="version">Beta 1.3</div>
     </header>
 
     <main class="layout">
@@ -1490,7 +1525,7 @@
     </main>
   </div>
 
-  <div id="appVersionBadge" class="app-version-badge">Beta 1.2</div>
+  <div id="appVersionBadge" class="app-version-badge">Beta 1.3</div>
   <div id="toast" class="toast"></div>
 
 
@@ -1568,6 +1603,15 @@
 
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
+
+    const isStandaloneMode =
+      window.navigator.standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isStandaloneMode) {
+      document.body.classList.add('standalone-light-mode');
+    }
+
     const video = document.getElementById('video');
     const youtubePlayerEl = document.getElementById('youtubePlayer');
     const videoInput = document.getElementById('videoInput');
@@ -1757,7 +1801,7 @@
     function autoSaveDraft() {
       const draft = {
         app: 'Volley Video Check',
-        version: 'beta 1.2',
+        version: 'beta 1.3',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks,
@@ -2259,7 +2303,7 @@
 
       const project = {
         app: 'Volley Video Check',
-        version: 'beta 1.2',
+        version: 'beta 1.3',
         savedAt: new Date().toISOString(),
         video: currentVideoMeta,
         marks: [...marks].sort((a, b) => a.time - b.time)
